@@ -10,3 +10,5 @@ Route::get('/', function () {
 
 //Route::get('/produtos', 'ProdutoController@lista');
 Route::get('/produtos', [ProdutoController::class, 'lista'])->name('lista');
+Route::get('/produtos/mostra', [ProdutoController::class, 'mostra'])->name('mostra');
+
