@@ -11,11 +11,12 @@
             <div @class('container-fluid')>
                 <div @class('navbar-header')>
                     <a @class('navbar-brand') href="/produtos">Estoque Laravel</a>
+                    <a @class('navbar-brand') href="/produtos/login" >Login</a>
                 </div>
 
                 <ul @class('nav navbar-nav navbar-right')>
-                    <li><a @class('navbar-brand') href="/produtos">Listagem</a></li>
-                    <li><a @class('navbar-brand') href="/produtos/novo">Novo</a></li>
+                    <li><a  href="/produtos">Listagem</a></li>
+                    <li><a  href="/produtos/novo">Novo</a></li>
                 </ul>
             </div>
         </nav>

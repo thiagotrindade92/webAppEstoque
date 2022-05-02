@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Produto;
 
 class ProdutoController extends Controller {
 
     public function lista(){
 
-        $produtos = DB::select('SELECT * FROM produtos');
-
+        $produtos = Produto::all();
         return view('produto.listagem')->with('produtos', $produtos);
     }
 
@@ -45,6 +45,10 @@ class ProdutoController extends Controller {
             ]
         );
 
-        return view('produto.adicionado') -> with('nome', $nome);
+        return redirect('/produtos')-> withInput(Request::only('nome'));
+    }
+
+    public function login(){
+        return view('produto.login');
     }
 }
