@@ -9,10 +9,6 @@ use App\Models\Produto;
 
 class ProdutoController extends Controller {
 
-    public function __construct()
-    	{
-    		$this->middleware('auth', ['only' => ['adiciona', 'remove']]);
-    	}
 
     	public function lista(){
     		$produtos = Produto::all();
@@ -31,13 +27,19 @@ class ProdutoController extends Controller {
     		return view('produto.formulario');
     	}
 
-    	public function adiciona(ProdutosRequest $request){
-    		Produto::create($request->all());
+        public function adiciona(){
 
-    		return redirect()
-    			->action('ProdutoController@lista')
-    			->withInput(Request::only('nome'));
-    	}
+             $nome = Request::input('nome');
+             $descricao = Request::input('descricao');
+             $valor = Request::input('valor');
+             $quantidade = Request::input('quantidade');
+
+             DB::insert('insert into produtos(nome, valor, descricao, quantidade) values (?,?,?,?)',
+                array($nome, $valor, $descricao, $quantidade));
+
+
+             return view('produto.adicionado')->with('nome', $nome);
+        }
 
     	public function listaJson(){
     		$produtos = Produto::all();
@@ -45,9 +47,9 @@ class ProdutoController extends Controller {
     	}
 
     	public function remove($id){
-    		$produto = Produto::find($id);
-    		$produto->delete();
-    		return redirect()->action('ProdutoController@lista');
+            $produto = Produto::find($id);
+            $produto->delete(null);
+            return redirect()->back();
     	}
 
     }
