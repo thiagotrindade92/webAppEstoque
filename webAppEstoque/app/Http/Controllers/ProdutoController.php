@@ -1,55 +1,56 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProdutoRequest;
 use Request;
 use Illuminate\Support\Facades\DB;
+use	Illuminate\Http\Response;
 use App\Models\Produto;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 
 class ProdutoController extends Controller {
 
+  public function lista(){
+  	$produtos = Produto::all();
 
-    	public function lista(){
-    		$produtos = Produto::all();
-    		return view('produto.listagem')->with('produtos', $produtos);
+			return view('produto.listagem')->with('produtos', $produtos);
+  }
+
+  public function mostra($id){
+    $produto = Produto::find($id);
+    	if(empty($produto)) {
+    		return "Esse produto não existe";
     	}
 
-    	public function mostra($id){
-    		$produto = Produto::find($id);
-    		if(empty($produto)) {
-    			return "Esse produto não existe";
-    		}
-    		return view('produto.detalhes')->with('p', $produto);
-    	}
+			return view('produto.detalhes')->with('p', $produto);
+	}
 
-    	public function novo(){
-    		return view('produto.formulario');
-    	}
+  public function novo(){
+    	return view('produto.formulario');
+  }
 
-        public function adiciona(){
+  public function adiciona(ProdutoRequest $request){
 
-             $nome = Request::input('nome');
-             $descricao = Request::input('descricao');
-             $valor = Request::input('valor');
-             $quantidade = Request::input('quantidade');
+	$validated = $request->validated();
+	$validated = $request->safe()->only(['name', 'descricao', 'valor', 'quantidade']);
+    $validated = $request->safe()->except(['name', 'descricao', 'valor', 'quantidade']);
+		Produto::create($request->all());
 
-             DB::insert('insert into produtos(nome, valor, descricao, quantidade) values (?,?,?,?)',
-                array($nome, $valor, $descricao, $quantidade));
+	    //return redirect()->action([ProdutoController::class, 'produto.adicionado']);
+	    return view('produto.adicionado');
+  }
 
+  public function listaJson(){
+  	$produtos = Produto::all();
+   		return response()->json($produtos);
+ 	}
 
-             return view('produto.adicionado')->with('nome', $nome);
-        }
+  public function remove($id){
+    $produto = Produto::find($id);
+    $produto->delete();
 
-    	public function listaJson(){
-    		$produtos = Produto::all();
-    		return response()->json($produtos);
-    	}
+			return redirect()->back();
+  }
 
-    	public function remove($id){
-            $produto = Produto::find($id);
-            $produto->delete(null);
-            return redirect()->back();
-    	}
-
-    }
+}
